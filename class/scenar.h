@@ -5,13 +5,13 @@ using namespace std;
 class scenar {
   public:
     scenar(string name, int height, int widght, int robot_x, int robot_y,
-           int *matrix_base) {
-        name = name;
-        height = height;
-        widght = widght;
-        robot_x = robot_x;
-        robot_y = robot_y;
-        matrix_base = matrix_base;
+           char *matrix_base) {
+        set_name(name);
+        set_height(height);
+        set_widght(widght);
+        set_robot_x(robot_x);
+        set_robot_y(robot_y);
+        set_matrix_base(matrix_base);
     }
     ~scenar() { delete matrix_base; }
     // getters
@@ -20,10 +20,7 @@ class scenar {
     int get_widght() { return widght; }
     int get_robot_x() { return robot_x; }
     int get_robot_y() { return robot_y; }
-    int *get_matrix_base() { return matrix_base; }
-
-  private:
-    // private setters
+    char *get_matrix_base() { return matrix_base; }
     void set_name(string name) {
         if (name == "")
             name = "default";
@@ -40,24 +37,26 @@ class scenar {
         this->widght = widght;
     }
     void set_robot_x(int robot_x) {
-        if (robot_x < 0 || robot_x >= widght)
-            throw std::invalid_argument("robot_x must be positive");
+        if (robot_x < 0 || robot_x > widght)
+            throw std::invalid_argument("robot_x must be positive and lesse than widght");
         this->robot_x = robot_x;
     }
     void set_robot_y(int robot_y) {
-        if (robot_y < 0 || robot_y >= height)
-            throw std::invalid_argument("robot_y must be positive");
+        if (robot_y < 0 || robot_y > height)
+            throw std::invalid_argument("robot_y must be positive and lesse than height");
         this->robot_y = robot_y;
     }
-    void set_matrix_base(int *matrix_base) {
+    void set_matrix_base(char *matrix_base) {
         if (matrix_base == NULL)
             throw std::invalid_argument("matrix_base must be positive");
         this->matrix_base = matrix_base;
     }
+
+  private:
     string name;
     int height;
     int widght;
     int robot_x;
     int robot_y;
-    int *matrix_base;
+    char *matrix_base;
 };

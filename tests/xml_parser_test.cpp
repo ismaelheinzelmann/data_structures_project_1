@@ -15,6 +15,6 @@ int main(int argc, char *argv[]) {
     // reader.parse_scenaries("../scenaries/cenarios4.xml");
     // reader.parse_scenaries("../scenaries/cenarios5.xml");
     // reader.parse_scenaries("../scenaries/cenarios6.xml");
-    
+    reader.print_scenaries();
     return 0;
 }

@@ -12,7 +12,6 @@ class XML_READER {
     XML_READER() {
         stack = new structures::LinkedStack<string>();
         queue = new structures::LinkedQueue<string>();
-        xml_content = "";
     }
     ~XML_READER() { delete stack; }
 
@@ -34,7 +33,6 @@ class XML_READER {
                         tag.erase(0, 1);
                         string tag_stack = stack->pop();
                         if (tag_stack != tag) {
-                            xml_content = "";
                             stack->clear();
                             throw std::runtime_error("malformed xml");
                         }
@@ -45,6 +43,9 @@ class XML_READER {
                             tag += line[i];
                             i++;
                         }
+                        if (tag == "cenario") {
+                            scenaries_counter++;
+                        }
                         stack->push(tag);
                     }
                 }
@@ -53,17 +54,6 @@ class XML_READER {
         file.close();
         stack->clear();
         return scenaries_counter;
-    }
-
-    // Parse the scenaries and return the xml content as scenar classes
-    void parse_scenaries(string file_name) {
-        // firstly verify to avoid malformed xml
-        int n = verify(file_name);
-
-        std::ifstream file(file_name);
-        string line, name;
-        int height, widght, robot_x, robot_y, *matrix_base;
-        recursive_tags(file_name);
     }
 
     void recursive_tags(string file_name) {
@@ -102,13 +92,96 @@ class XML_READER {
         }
         file.close();
         // Stack now have all values and its flags
-        while (!queue->empty()) {
-            cout << queue->dequeue() << endl;
+    }
+
+    void parse_scenaries(string filename) {
+        int n;
+        try {
+            n = verify(filename);
+        } catch (std::exception &e) {
+            throw std::runtime_error("malformed xml");
+        }
+        scenar_counter = 0;
+        scenaries = new scenar *[n];
+        recursive_tags(filename);
+        if (queue->dequeue() != "cenarios") {
+            throw std::runtime_error("malformed xml");
+        }
+        for (int k = 0; k < n; k++) {
+            string nome = "default";
+            int altura = 0, largura = 0, x = 0, y = 0;
+            char *matrix;
+            queue->dequeue();
+            while (!queue->empty() && queue->front() != "cenario") {
+                string valor = queue->dequeue();
+                if (valor == "nome") {
+                    nome = queue->dequeue();
+                    continue;
+                }
+                if (valor == "dimensoes") {
+                    for (int i = 0; i < 2; i++) {
+                        string inner = queue->dequeue();
+                        if (inner == "altura") {
+                            altura = stoi(queue->dequeue());
+                        }
+                        if (inner == "largura") {
+                            largura = stoi(queue->dequeue());
+                        }
+                    }
+                }
+                if (valor == "robo") {
+                    for (int i = 0; i < 2; i++) {
+                        string inner = queue->dequeue();
+                        if (inner == "x") {
+                            x = stoi(queue->dequeue());
+                        }
+                        if (inner == "y") {
+                            y = stoi(queue->dequeue());
+                        }
+                    }
+                }
+                if (valor == "matriz") {
+                    matrix = new char[altura * largura];
+                    for (int i = 0; i < altura; i++) {
+                        string line = queue->dequeue();
+                        for (int j = 0; j < largura; j++) {
+                            matrix[i * largura + j] = line[j];
+                        }
+                    }
+                }
+            }
+            try {
+                // cout << nome << endl;
+                // cout << altura << endl;
+                // cout << largura << endl;
+                // cout << x << endl;
+                // cout << y << endl;
+                // cout << matrix << endl;
+
+                scenar *new_scenar =
+                    new scenar(nome, altura, largura, x, y, matrix);
+                scenaries[scenar_counter] = new_scenar;
+                scenar_counter++;
+            } catch (const std::exception &e) {
+                std::cerr << "Error creating scenary" << nome << '\n';
+                std::cerr << e.what() << '\n';
+            }
+        }
+    }
+    void print_scenaries() {
+        for (int i = 0; i < scenar_counter; i++) {
+            cout << scenaries[i]->get_name() << endl;
+            cout << scenaries[i]->get_height() << endl;
+            cout << scenaries[i]->get_widght() << endl;
+            cout << scenaries[i]->get_robot_x() << endl;
+            cout << scenaries[i]->get_robot_y() << endl;
+            cout << scenaries[i]->get_matrix_base() << endl;
         }
     }
 
   private:
     structures::LinkedStack<string> *stack;
     structures::LinkedQueue<string> *queue;
-    string xml_content;
+    scenar **scenaries;
+    int scenar_counter;
 };
