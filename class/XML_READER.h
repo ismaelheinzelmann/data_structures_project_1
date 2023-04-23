@@ -6,14 +6,19 @@
 #include <string>
 
 using namespace std;
-using namespace structures;
 class XML_READER {
   public:
     XML_READER() {
         stack = new structures::LinkedStack<string>();
         queue = new structures::LinkedQueue<string>();
     }
-    ~XML_READER() { delete stack; }
+    ~XML_READER() {
+        delete stack;
+        for (size_t i = 0; i < scenar_counter; i++) {
+            delete scenaries[i];
+        }
+        delete scenaries;
+    }
 
     // Verify if the xml file is well formed and return the number of scenaries
     int verify(string file_name) {
@@ -151,19 +156,12 @@ class XML_READER {
                 }
             }
             try {
-                // cout << nome << endl;
-                // cout << altura << endl;
-                // cout << largura << endl;
-                // cout << x << endl;
-                // cout << y << endl;
-                // cout << matrix << endl;
-
                 scenar *new_scenar =
                     new scenar(nome, altura, largura, x, y, matrix);
                 scenaries[scenar_counter] = new_scenar;
                 scenar_counter++;
             } catch (const std::exception &e) {
-                std::cerr << "Error creating scenary" << nome << '\n';
+                std::cerr << "Error creating scenary " << nome << '\n';
                 std::cerr << e.what() << '\n';
             }
         }
@@ -178,6 +176,8 @@ class XML_READER {
             cout << scenaries[i]->get_matrix_base() << endl;
         }
     }
+    int get_counter() { return scenar_counter; }
+    scenar **get_parsed_scenaries() { return scenaries; }
 
   private:
     structures::LinkedStack<string> *stack;

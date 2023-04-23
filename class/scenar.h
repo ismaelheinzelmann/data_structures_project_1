@@ -1,10 +1,9 @@
 #include <stdexcept>
 #include <string>
-using namespace std;
 
 class scenar {
   public:
-    scenar(string name, int height, int widght, int robot_x, int robot_y,
+    scenar(std::string name, int height, int widght, int robot_x, int robot_y,
            char *matrix_base) {
         set_name(name);
         set_height(height);
@@ -13,15 +12,15 @@ class scenar {
         set_robot_y(robot_y);
         set_matrix_base(matrix_base);
     }
-    ~scenar() { delete matrix_base; }
+    ~scenar() { delete[] matrix_base; }
     // getters
-    string get_name() { return name; }
+    std::string get_name() { return name; }
     int get_height() { return height; }
     int get_widght() { return widght; }
     int get_robot_x() { return robot_x; }
     int get_robot_y() { return robot_y; }
     char *get_matrix_base() { return matrix_base; }
-    void set_name(string name) {
+    void set_name(std::string name) {
         if (name == "")
             name = "default";
         this->name = name;
@@ -38,12 +37,14 @@ class scenar {
     }
     void set_robot_x(int robot_x) {
         if (robot_x < 0 || robot_x > widght)
-            throw std::invalid_argument("robot_x must be positive and lesse than widght");
+            throw std::invalid_argument(
+                "robot_x must be positive and lesse than widght");
         this->robot_x = robot_x;
     }
     void set_robot_y(int robot_y) {
         if (robot_y < 0 || robot_y > height)
-            throw std::invalid_argument("robot_y must be positive and lesse than height");
+            throw std::invalid_argument(
+                "robot_y must be positive and lesse than height");
         this->robot_y = robot_y;
     }
     void set_matrix_base(char *matrix_base) {
@@ -51,9 +52,22 @@ class scenar {
             throw std::invalid_argument("matrix_base must be positive");
         this->matrix_base = matrix_base;
     }
+    int flood() {
+        int flood;
+        char map[get_height()][get_widght()];
+
+        for (size_t i = 0; i < height; i++) {
+            for (size_t j = 0; j < widght; j++) {
+                map[i][j] = '0';
+            }
+        }
+        
+
+        return 0;
+    }
 
   private:
-    string name;
+    std::string name;
     int height;
     int widght;
     int robot_x;
