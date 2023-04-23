@@ -1,6 +1,6 @@
 #include <stdexcept>
 #include <string>
-
+using namespace std;
 class scenar {
   public:
     scenar(std::string name, int height, int widght, int robot_x, int robot_y,
@@ -36,13 +36,13 @@ class scenar {
         this->widght = widght;
     }
     void set_robot_x(int robot_x) {
-        if (robot_x < 0 || robot_x > widght)
+        if (robot_x < 0 || robot_x > height)
             throw std::invalid_argument(
                 "robot_x must be positive and lesse than widght");
         this->robot_x = robot_x;
     }
     void set_robot_y(int robot_y) {
-        if (robot_y < 0 || robot_y > height)
+        if (robot_y < 0 || robot_y > widght)
             throw std::invalid_argument(
                 "robot_y must be positive and lesse than height");
         this->robot_y = robot_y;
@@ -51,19 +51,6 @@ class scenar {
         if (matrix_base == NULL)
             throw std::invalid_argument("matrix_base must be positive");
         this->matrix_base = matrix_base;
-    }
-    int flood() {
-        int flood;
-        char map[get_height()][get_widght()];
-
-        for (size_t i = 0; i < height; i++) {
-            for (size_t j = 0; j < widght; j++) {
-                map[i][j] = '0';
-            }
-        }
-        
-
-        return 0;
     }
 
   private:

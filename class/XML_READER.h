@@ -57,7 +57,9 @@ class XML_READER {
             }
         }
         file.close();
-        stack->clear();
+        if (!stack->empty()){
+            throw std::runtime_error("malformed xml");
+        }
         return scenaries_counter;
     }
 
@@ -104,7 +106,8 @@ class XML_READER {
         try {
             n = verify(filename);
         } catch (std::exception &e) {
-            throw std::runtime_error("malformed xml");
+            cout<<"erro"<<endl;
+            exit(1);
         }
         scenar_counter = 0;
         scenaries = new scenar *[n];
